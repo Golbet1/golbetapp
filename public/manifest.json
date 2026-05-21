@@ -1,0 +1,25 @@
+{
+  "name": "Golbet",
+  "short_name": "Golbet",
+  "description": "Golbet Mobile Betting App",
+  "start_url": "/launch",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#071d2a",
+  "background_color": "#071d2a",
+  "icons": [
+    {
+      "src": "/App_Icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/App_Icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
