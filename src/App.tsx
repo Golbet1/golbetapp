@@ -45,7 +45,6 @@ const TEXT = {
     iosBtn: 'iOS İndir',
     licensed: 'Lisanslı & Güvenli',
     licenseDesc: 'CGA tarafından Trickless N.V aracılığıyla lisanslandırılan Golbet, üyelerinin her zaman yanında olarak gerek güvenlik önlemleri gerekse destek hizmetleriyle bahis deneyimini bir üst boyuta taşımaktadır.',
-    footer: 'Tüm hakları saklıdır',
     phoneMockupAlt: 'Golbet Mobil Uygulama',
   },
   en: {
@@ -65,7 +64,6 @@ const TEXT = {
     iosBtn: 'Download iOS',
     licensed: 'Licensed & Secure',
     licenseDesc: 'Licensed by CGA through Trickless N.V, Golbet is always by its members\' side, elevating the betting experience with both security measures and support services.',
-    footer: 'All rights reserved',
     phoneMockupAlt: 'Golbet Mobile App',
   },
 };
@@ -323,19 +321,15 @@ function LicenseSection({ lang }: { lang: Lang }) {
   );
 }
 
-function Footer({ lang }: { lang: Lang }) {
-  const t = TEXT[lang];
+function Footer() {
   return (
     <footer className="w-full max-w-[660px] mx-auto px-4 pb-6 text-center">
       <div className="border-t border-[#1a4a6b]/40 pt-4">
-        <div className="flex items-center justify-center gap-2 mb-1">
+        <div className="flex items-center justify-center gap-2">
           <img src={ASSETS.iconGolbet} alt="" className="w-4 h-4" />
           <span className="text-[#8b9bb0] text-xs font-medium">golbet</span>
           <img src={ASSETS.iconGolbet} alt="" className="w-4 h-4" />
         </div>
-        <p className="text-[#4a5568] text-[10px]">
-          &copy; 2026 Golbet &middot; {t.footer}
-        </p>
       </div>
     </footer>
   );
@@ -352,7 +346,7 @@ function App() {
       <HowItWorks lang={lang} />
       <BottomCTA lang={lang} />
       <LicenseSection lang={lang} />
-      <Footer lang={lang} />
+      <Footer />
     </div>
   );
 }

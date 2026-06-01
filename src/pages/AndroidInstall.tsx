@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { ArrowLeft, Download, MoreVertical, Plus } from 'lucide-react';
+import { ArrowLeft, Download, MoreVertical, Plus, Loader2 } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { usePWAInstall } from '../PWAInstallContext.tsx';
 
@@ -12,9 +12,11 @@ const TEXT = {
     title: 'Android App',
     subtitle: 'Add Golbet to your home screen and use it like an app.',
     installBtn: 'Add to Home Screen',
+    preparingInstall: 'Preparing installation...',
     installedTitle: 'Installation Complete!',
     installedDesc: 'Golbet has been added to your home screen. You can open the app from your home screen.',
-    stepsTitle: 'Steps to Add to Home Screen',
+    stepsTitle: 'Manual Installation Steps',
+    stepsNote: 'Make sure you are using Chrome browser. Follow the steps below if the automatic installation does not start.',
     step1Title: 'Open the Chrome menu',
     step1Desc: 'Tap the',
     step1Desc2: 'icon in the top-right corner',
@@ -28,9 +30,11 @@ const TEXT = {
     title: 'Android Uygulaması',
     subtitle: 'Golbet\'i ana ekranınıza ekleyerek uygulama gibi kullanın.',
     installBtn: 'Ana Ekrana Ekle',
+    preparingInstall: 'Kurulum hazırlanıyor...',
     installedTitle: 'Kurulum Tamamlandı!',
     installedDesc: 'Golbet ana ekranınıza eklendi. Uygulamayı ana ekranınızdan açabilirsiniz.',
-    stepsTitle: 'Ana Ekrana Ekleme Adımları',
+    stepsTitle: 'Manuel Kurulum Adımları',
+    stepsNote: 'Chrome tarayıcısında açtığınızdan emin olun. Otomatik kurulum başlamazsa aşağıdaki adımları takip edin.',
     step1Title: 'Chrome menüsünü açın',
     step1Desc: 'Sağ üstteki',
     step1Desc2: 'ikonuna dokunun',
@@ -50,7 +54,7 @@ export default function AndroidInstall() {
 
   const { deferredPrompt, clearPrompt } = usePWAInstall();
   const [installed, setInstalled] = useState(false);
-  const [showSteps, setShowSteps] = useState(false);
+  const [preparing, setPreparing] = useState(false);
   const stepsRef = useRef<HTMLDivElement>(null);
 
   const handleInstall = async () => {
@@ -61,11 +65,22 @@ export default function AndroidInstall() {
         setInstalled(true);
       }
       clearPrompt();
+      return;
+    }
+
+    setPreparing(true);
+    await new Promise<void>((resolve) => setTimeout(resolve, 4000));
+    setPreparing(false);
+
+    if (deferredPrompt) {
+      await deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        setInstalled(true);
+      }
+      clearPrompt();
     } else {
-      setShowSteps(true);
-      setTimeout(() => {
-        stepsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 100);
+      stepsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
 
@@ -86,9 +101,7 @@ export default function AndroidInstall() {
             <img src={ICON} alt="Golbet" className="w-12 h-12 rounded-xl" />
           </div>
           <h1 className="text-2xl font-extrabold text-white mb-2">{t.title}</h1>
-          <p className="text-[#8b9bb0] text-sm">
-            {t.subtitle}
-          </p>
+          <p className="text-[#8b9bb0] text-sm">{t.subtitle}</p>
         </div>
 
         {installed ? (
@@ -99,76 +112,75 @@ export default function AndroidInstall() {
               </svg>
             </div>
             <h2 className="text-white font-bold text-lg mb-1">{t.installedTitle}</h2>
-            <p className="text-[#8b9bb0] text-sm">
-              {t.installedDesc}
-            </p>
+            <p className="text-[#8b9bb0] text-sm">{t.installedDesc}</p>
           </div>
         ) : (
-          <>
-            <button
-              onClick={handleInstall}
-              className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-[#1a61b0] to-[#1e5a99] hover:from-[#2070c4] hover:to-[#2468ad] text-white font-bold text-base rounded-xl transition-all duration-200 hover:shadow-[0_0_30px_rgba(26,97,176,0.4)] mb-8"
-            >
-              <Download className="w-5 h-5" />
-              <span>{t.installBtn}</span>
-            </button>
+          <button
+            onClick={handleInstall}
+            disabled={preparing}
+            className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-[#1a61b0] to-[#1e5a99] hover:from-[#2070c4] hover:to-[#2468ad] disabled:opacity-70 text-white font-bold text-base rounded-xl transition-all duration-200 hover:shadow-[0_0_30px_rgba(26,97,176,0.4)] mb-8"
+          >
+            {preparing ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span>{t.preparingInstall}</span>
+              </>
+            ) : (
+              <>
+                <Download className="w-5 h-5" />
+                <span>{t.installBtn}</span>
+              </>
+            )}
+          </button>
+        )}
 
-            {(showSteps || !deferredPrompt) && (
-              <div ref={stepsRef} className="bg-[#0d2035] border border-[#1a4a6b]/60 rounded-xl p-5 mb-6">
-                <h2 className="text-white font-bold text-base mb-4 text-center">
-                  {t.stepsTitle}
-                </h2>
+        <div ref={stepsRef} className="bg-[#0d2035] border border-[#1a4a6b]/60 rounded-xl p-5">
+          <h2 className="text-white font-bold text-base mb-2 text-center">
+            {t.stepsTitle}
+          </h2>
+          <p className="text-[#5ba3e6] text-xs text-center mb-4 leading-relaxed">
+            {t.stepsNote}
+          </p>
 
-                <div className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-full bg-[#1a61b0]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <span className="text-[#5ba3e6] font-bold text-sm">1</span>
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-white text-sm font-medium mb-1">
-                        {t.step1Title}
-                      </p>
-                      <div className="flex items-center gap-2 text-[#8b9bb0] text-xs">
-                        <span>{t.step1Desc}</span>
-                        <MoreVertical className="w-4 h-4 text-[#5ba3e6]" />
-                        <span>{t.step1Desc2}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-full bg-[#1a61b0]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <span className="text-[#5ba3e6] font-bold text-sm">2</span>
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-white text-sm font-medium mb-1">
-                        {t.step2Title}
-                      </p>
-                      <div className="flex items-center gap-2 text-[#8b9bb0] text-xs">
-                        <Plus className="w-4 h-4 text-[#5ba3e6]" />
-                        <span>{t.step2Desc}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-full bg-[#1a61b0]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <span className="text-[#5ba3e6] font-bold text-sm">3</span>
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-white text-sm font-medium mb-1">
-                        {t.step3Title}
-                      </p>
-                      <p className="text-[#8b9bb0] text-xs">
-                        {t.step3Desc}
-                      </p>
-                    </div>
-                  </div>
+          <div className="space-y-4">
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 rounded-full bg-[#1a61b0]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-[#5ba3e6] font-bold text-sm">1</span>
+              </div>
+              <div className="flex-1">
+                <p className="text-white text-sm font-medium mb-1">{t.step1Title}</p>
+                <div className="flex items-center gap-2 text-[#8b9bb0] text-xs">
+                  <span>{t.step1Desc}</span>
+                  <MoreVertical className="w-4 h-4 text-[#5ba3e6]" />
+                  <span>{t.step1Desc2}</span>
                 </div>
               </div>
-            )}
-          </>
-        )}
+            </div>
+
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 rounded-full bg-[#1a61b0]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-[#5ba3e6] font-bold text-sm">2</span>
+              </div>
+              <div className="flex-1">
+                <p className="text-white text-sm font-medium mb-1">{t.step2Title}</p>
+                <div className="flex items-center gap-2 text-[#8b9bb0] text-xs">
+                  <Plus className="w-4 h-4 text-[#5ba3e6]" />
+                  <span>{t.step2Desc}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 rounded-full bg-[#1a61b0]/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-[#5ba3e6] font-bold text-sm">3</span>
+              </div>
+              <div className="flex-1">
+                <p className="text-white text-sm font-medium mb-1">{t.step3Title}</p>
+                <p className="text-[#8b9bb0] text-xs">{t.step3Desc}</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
