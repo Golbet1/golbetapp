@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { ExternalLink, Gift, Star, Trophy, Users } from 'lucide-react';
 import { supabase } from '../supabase';
 
@@ -6,6 +7,21 @@ const REDIRECT_URL = 'https://t.ly/golgiris';
 const PROMO_URL = 'https://t.ly/golpromosyon';
 const LOGO = 'https://d3rklxwrkddo3q.cloudfront.net/2026/03/19/golbet-rb-beyaz-_3_.png';
 const ICON_GOLBET = 'https://d3rklxwrkddo3q.cloudfront.net/2026/03/19/giris_footer_botton_icon.png';
+
+type Lang = 'tr' | 'en';
+
+const TEXT = {
+  tr: {
+    redirecting: 'Yönlendiriliyorsunuz...',
+    goBtn: "Golbet'e Git",
+    campaigns: 'Kampanyalar',
+  },
+  en: {
+    redirecting: 'Redirecting...',
+    goBtn: 'Go to Golbet',
+    campaigns: 'Campaigns',
+  },
+};
 
 interface Promotion {
   id: string;
@@ -27,6 +43,10 @@ const PROMO_ICONS = [Trophy, Gift, Star, Users];
 const COUNTDOWN_SECONDS = 10;
 
 export default function Launch() {
+  const [searchParams] = useSearchParams();
+  const lang: Lang = searchParams.get('lang') === 'en' ? 'en' : 'tr';
+  const t = TEXT[lang];
+
   const [showContent, setShowContent] = useState(false);
   const [countdown, setCountdown] = useState(COUNTDOWN_SECONDS);
   const [promotions, setPromotions] = useState<Promotion[]>(FALLBACK_PROMOTIONS);
@@ -86,7 +106,7 @@ export default function Launch() {
 
         <div className="mb-6 text-center">
           <p className="text-[#8b9bb0] text-sm mb-3">
-            Yönlendiriliyorsunuz... <span className="text-white font-bold">{countdown}</span>
+            {t.redirecting} <span className="text-white font-bold">{countdown}</span>
           </p>
           <div className="w-full max-w-xs mx-auto h-1.5 bg-[#0d2035] rounded-full overflow-hidden border border-[#1a4a6b]/40">
             <div
@@ -100,7 +120,7 @@ export default function Launch() {
           href={REDIRECT_URL}
           className="flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-r from-[#1a61b0] to-[#1e5a99] hover:from-[#2070c4] hover:to-[#2468ad] text-white font-bold text-base rounded-xl transition-all duration-200 hover:shadow-[0_0_30px_rgba(26,97,176,0.4)] mb-8 w-full"
         >
-          <span>Golbet'e Git</span>
+          <span>{t.goBtn}</span>
           <ExternalLink className="w-5 h-5" />
         </a>
 
@@ -108,7 +128,7 @@ export default function Launch() {
           <div className="flex items-center justify-center gap-2 mb-5">
             <span className="text-[#5ba3e6] text-xs">&#10022;</span>
             <span className="text-[#5ba3e6] text-xs font-semibold tracking-[0.2em] uppercase">
-              Kampanyalar
+              {t.campaigns}
             </span>
             <span className="text-[#5ba3e6] text-xs">&#10022;</span>
           </div>
