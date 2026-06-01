@@ -149,7 +149,7 @@ function Hero({ lang }: { lang: Lang }) {
           </div>
 
           <Link
-            to={`/launch?lang=${lang}`}
+            to="/launch"
             className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#0d2035] border border-[#1a4a6b]/60 hover:border-[#5ba3e6]/60 text-white font-semibold text-sm rounded-lg transition-all duration-200"
           >
             <span>{t.girisBtn}</span>
