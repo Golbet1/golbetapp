@@ -5,7 +5,6 @@ import { supabase } from '../supabase';
 const REDIRECT_URL = 'https://t.ly/golgiris';
 const PROMO_URL = 'https://t.ly/golpromosyon';
 const LOGO = 'https://d3rklxwrkddo3q.cloudfront.net/2026/03/19/golbet-rb-beyaz-_3_.png';
-const ICON_GOLBET = 'https://d3rklxwrkddo3q.cloudfront.net/2026/03/19/giris_footer_botton_icon.png';
 
 interface Promotion {
   id: string;
@@ -145,14 +144,6 @@ export default function Launch() {
             })}
           </div>
         </div>
-
-        <footer className="text-center pt-4 border-t border-[#1a4a6b]/40">
-          <div className="flex items-center justify-center gap-2">
-            <img src={ICON_GOLBET} alt="" className="w-4 h-4" />
-            <span className="text-[#8b9bb0] text-xs font-medium">golbet</span>
-            <img src={ICON_GOLBET} alt="" className="w-4 h-4" />
-          </div>
-        </footer>
       </div>
     </div>
   );

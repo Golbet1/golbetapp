@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react';
-import { ArrowLeft, Download, Share, Plus } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { ArrowLeft, Download, Share, Plus, ChevronDown } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { usePWAInstall } from '../PWAInstallContext.tsx';
 
@@ -14,7 +14,9 @@ const TEXT = {
     installBtn: 'Add to Home Screen',
     installedTitle: 'Installation Complete!',
     installedDesc: 'Golbet has been added to your home screen. You can open the app from your home screen.',
-    stepsTitle: 'Manual Installation Steps',
+    safariCue: 'Tap the Share button below in Safari',
+    safariCueDesc: 'Then select "Add to Home Screen" from the menu',
+    stepsTitle: 'Installation Steps',
     stepsNote: 'This page must be open in Safari browser. Follow the steps below to add Golbet to your home screen.',
     step1Title: 'Open this page in Safari',
     step1Desc: 'This page must be open in the Safari browser. If you are using a different browser, copy the link and paste it into Safari.',
@@ -33,7 +35,9 @@ const TEXT = {
     installBtn: 'Ana Ekrana Ekle',
     installedTitle: 'Kurulum Tamamlandı!',
     installedDesc: 'Golbet ana ekranınıza eklendi. Uygulamayı ana ekranınızdan açabilirsiniz.',
-    stepsTitle: 'Manuel Kurulum Adımları',
+    safariCue: 'Safari\'de alttaki Paylaş butonuna dokunun',
+    safariCueDesc: 'Ardından menüden "Ana Ekrana Ekle" seçeneğini seçin',
+    stepsTitle: 'Kurulum Adımları',
     stepsNote: 'Bu sayfa Safari tarayıcısında açık olmalıdır. Golbet\'i ana ekranınıza eklemek için aşağıdaki adımları takip edin.',
     step1Title: 'Bu sayfayı Safari\'de açın',
     step1Desc: 'Bu sayfa Safari tarayıcısında açık olmalıdır. Farklı bir tarayıcı kullanıyorsanız, bağlantıyı kopyalayıp Safari\'ye yapıştırın.',
@@ -56,7 +60,15 @@ export default function IosInstall() {
 
   const { deferredPrompt, clearPrompt } = usePWAInstall();
   const [installed, setInstalled] = useState(false);
+  const [showCue, setShowCue] = useState(false);
   const stepsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!deferredPrompt) {
+      const timer = setTimeout(() => setShowCue(true), 800);
+      return () => clearTimeout(timer);
+    }
+  }, [deferredPrompt]);
 
   const handleInstall = async () => {
     if (deferredPrompt) {
@@ -69,22 +81,11 @@ export default function IosInstall() {
       return;
     }
 
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: 'Golbet',
-          text: 'Golbet Mobil Uygulama',
-          url: window.location.origin,
-        });
-        return;
-      } catch (_) {}
-    }
-
     stepsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   return (
-    <div className="min-h-screen bg-[#071d2a] flex flex-col items-center px-4 py-6">
+    <div className="min-h-screen bg-[#071d2a] flex flex-col items-center px-4 py-6 pb-32">
       <div className="w-full max-w-md">
         <Link
           to="/"
@@ -113,7 +114,7 @@ export default function IosInstall() {
             <h2 className="text-white font-bold text-lg mb-1">{t.installedTitle}</h2>
             <p className="text-[#8b9bb0] text-sm">{t.installedDesc}</p>
           </div>
-        ) : (
+        ) : deferredPrompt ? (
           <button
             onClick={handleInstall}
             className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-[#1a61b0] to-[#1e5a99] hover:from-[#2070c4] hover:to-[#2468ad] text-white font-bold text-base rounded-xl transition-all duration-200 hover:shadow-[0_0_30px_rgba(26,97,176,0.4)] mb-8"
@@ -121,7 +122,7 @@ export default function IosInstall() {
             <Download className="w-5 h-5" />
             <span>{t.installBtn}</span>
           </button>
-        )}
+        ) : null}
 
         <div ref={stepsRef} className="bg-[#0d2035] border border-[#1a4a6b]/60 rounded-xl p-5">
           <h2 className="text-white font-bold text-base mb-2 text-center">
@@ -181,6 +182,19 @@ export default function IosInstall() {
           </div>
         </div>
       </div>
+
+      {showCue && !installed && !deferredPrompt && (
+        <div className="fixed bottom-0 left-0 right-0 flex flex-col items-center pb-3 pointer-events-none z-50">
+          <div className="bg-[#0d2035]/95 backdrop-blur-sm border border-[#5ba3e6]/50 rounded-xl px-5 py-3 mb-2 shadow-[0_0_30px_rgba(91,163,230,0.2)] animate-fade-in">
+            <div className="flex items-center gap-2 mb-1">
+              <Share className="w-4 h-4 text-[#5ba3e6]" />
+              <span className="text-white text-sm font-semibold">{t.safariCue}</span>
+            </div>
+            <p className="text-[#8b9bb0] text-xs">{t.safariCueDesc}</p>
+          </div>
+          <ChevronDown className="w-6 h-6 text-[#5ba3e6] animate-bounce" />
+        </div>
+      )}
     </div>
   );
 }

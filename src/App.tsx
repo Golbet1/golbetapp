@@ -18,7 +18,6 @@ const LINKS = {
 const ASSETS = {
   logo: 'https://d3rklxwrkddo3q.cloudfront.net/2026/03/19/golbet-rb-beyaz-_3_.png',
   phoneMockup: 'https://d3rklxwrkddo3q.cloudfront.net/2026/05/22/golbetappphone.png',
-  iconGolbet: 'https://d3rklxwrkddo3q.cloudfront.net/2026/03/19/giris_footer_botton_icon.png',
   iconInstagram: 'https://d3rklxwrkddo3q.cloudfront.net/2026/03/16/INSTA.png',
   iconTwitter: 'https://d3rklxwrkddo3q.cloudfront.net/2026/03/16/X.png',
   iconWhatsapp: 'https://d3rklxwrkddo3q.cloudfront.net/2026/03/16/WHATSAPP.png',
@@ -319,20 +318,6 @@ function LicenseSection({ lang }: { lang: Lang }) {
   );
 }
 
-function Footer() {
-  return (
-    <footer className="w-full max-w-[660px] mx-auto px-4 pb-6 text-center">
-      <div className="border-t border-[#1a4a6b]/40 pt-4">
-        <div className="flex items-center justify-center gap-2">
-          <img src={ASSETS.iconGolbet} alt="" className="w-4 h-4" />
-          <span className="text-[#8b9bb0] text-xs font-medium">golbet</span>
-          <img src={ASSETS.iconGolbet} alt="" className="w-4 h-4" />
-        </div>
-      </div>
-    </footer>
-  );
-}
-
 function App() {
   const [lang, setLang] = useState<Lang>('tr');
 
@@ -344,7 +329,6 @@ function App() {
       <HowItWorks lang={lang} />
       <BottomCTA lang={lang} />
       <LicenseSection lang={lang} />
-      <Footer />
     </div>
   );
 }
