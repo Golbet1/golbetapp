@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 import { ArrowLeft, Download, Share, Plus } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
 
-const LOGO = 'https://cmsbetconstruct.com/storage/medias/golbetting-18764295/media_18764295_98125707f0f76595cfda7a3ec28e7286.svg';
+const LOGO = 'https://d3rklxwrkddo3q.cloudfront.net/2026/03/19/golbet-rb-beyaz-_3_.png';
 const ICON = '/App_Icon.png';
 
 interface BeforeInstallPromptEvent extends Event {

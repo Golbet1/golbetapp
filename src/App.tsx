@@ -16,13 +16,13 @@ const LINKS = {
 };
 
 const ASSETS = {
-  logo: 'https://cmsbetconstruct.com/storage/medias/golbetting-18764295/media_18764295_98125707f0f76595cfda7a3ec28e7286.svg',
-  phoneMockup: 'https://cmsbetconstruct.com/storage/medias/golbetting-18764295/media_18764295_93e83bd405f74881aaa4ff909fac18a9.png',
-  iconGolbet: 'https://cmsbetconstruct.com/storage/medias/golbetting-18764295/media_18764295_45d0a91ebbffcd326be0ae164b93e809.svg',
-  iconInstagram: 'https://cmsbetconstruct.com/storage/medias/golbetting-18764295/media_18764295_d0abea98e2c72f6c7f0ee97e40cfa33a.png',
-  iconTwitter: 'https://cmsbetconstruct.com/storage/medias/golbetting-18764295/media_18764295_de7763dbabbca8fb4e6154ef3553e87d.png',
-  iconWhatsapp: 'https://cmsbetconstruct.com/storage/medias/golbetting-18764295/media_18764295_1268266da998d8be5ee1e146433bd526.png',
-  iconTelegram: 'https://cmsbetconstruct.com/storage/medias/golbetting-18764295/media_18764295_f02cb745b61535363ba2a47c477370f6.png',
+  logo: 'https://d3rklxwrkddo3q.cloudfront.net/2026/03/19/golbet-rb-beyaz-_3_.png',
+  phoneMockup: 'https://d3rklxwrkddo3q.cloudfront.net/2026/05/22/golbetappphone.png',
+  iconGolbet: 'https://d3rklxwrkddo3q.cloudfront.net/2026/03/19/giris_footer_botton_icon.png',
+  iconInstagram: 'https://d3rklxwrkddo3q.cloudfront.net/2026/03/16/INSTA.png',
+  iconTwitter: 'https://d3rklxwrkddo3q.cloudfront.net/2026/03/16/X.png',
+  iconWhatsapp: 'https://d3rklxwrkddo3q.cloudfront.net/2026/03/16/WHATSAPP.png',
+  iconTelegram: 'https://d3rklxwrkddo3q.cloudfront.net/2026/03/16/TELEGRAM.png',
 };
 
 type Lang = 'tr' | 'en';
