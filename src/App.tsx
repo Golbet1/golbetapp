@@ -148,15 +148,13 @@ function Hero({ lang }: { lang: Lang }) {
             </Link>
           </div>
 
-          <a
-            href={LINKS.giris}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            to="/launch"
             className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#0d2035] border border-[#1a4a6b]/60 hover:border-[#5ba3e6]/60 text-white font-semibold text-sm rounded-lg transition-all duration-200"
           >
             <span>{t.girisBtn}</span>
             <ArrowRight className="w-4 h-4" />
-          </a>
+          </Link>
         </div>
 
         <div className="flex-shrink-0 w-[30%] max-w-[180px]">

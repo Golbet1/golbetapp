@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { ArrowLeft, Download, MoreVertical, Plus, Loader2 } from 'lucide-react';
+import { ArrowLeft, Download, MoreVertical, Plus } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { usePWAInstall } from '../PWAInstallContext.tsx';
 
@@ -12,7 +12,6 @@ const TEXT = {
     title: 'Android App',
     subtitle: 'Add Golbet to your home screen and use it like an app.',
     installBtn: 'Add to Home Screen',
-    preparingInstall: 'Preparing installation...',
     installedTitle: 'Installation Complete!',
     installedDesc: 'Golbet has been added to your home screen. You can open the app from your home screen.',
     stepsTitle: 'Manual Installation Steps',
@@ -30,7 +29,6 @@ const TEXT = {
     title: 'Android Uygulaması',
     subtitle: 'Golbet\'i ana ekranınıza ekleyerek uygulama gibi kullanın.',
     installBtn: 'Ana Ekrana Ekle',
-    preparingInstall: 'Kurulum hazırlanıyor...',
     installedTitle: 'Kurulum Tamamlandı!',
     installedDesc: 'Golbet ana ekranınıza eklendi. Uygulamayı ana ekranınızdan açabilirsiniz.',
     stepsTitle: 'Manuel Kurulum Adımları',
@@ -54,7 +52,6 @@ export default function AndroidInstall() {
 
   const { deferredPrompt, clearPrompt } = usePWAInstall();
   const [installed, setInstalled] = useState(false);
-  const [preparing, setPreparing] = useState(false);
   const stepsRef = useRef<HTMLDivElement>(null);
 
   const handleInstall = async () => {
@@ -68,20 +65,18 @@ export default function AndroidInstall() {
       return;
     }
 
-    setPreparing(true);
-    await new Promise<void>((resolve) => setTimeout(resolve, 4000));
-    setPreparing(false);
-
-    if (deferredPrompt) {
-      await deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      if (outcome === 'accepted') {
-        setInstalled(true);
-      }
-      clearPrompt();
-    } else {
-      stepsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Golbet',
+          text: 'Golbet Mobil Uygulama',
+          url: window.location.origin,
+        });
+        return;
+      } catch (_) {}
     }
+
+    stepsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   return (
@@ -117,20 +112,10 @@ export default function AndroidInstall() {
         ) : (
           <button
             onClick={handleInstall}
-            disabled={preparing}
-            className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-[#1a61b0] to-[#1e5a99] hover:from-[#2070c4] hover:to-[#2468ad] disabled:opacity-70 text-white font-bold text-base rounded-xl transition-all duration-200 hover:shadow-[0_0_30px_rgba(26,97,176,0.4)] mb-8"
+            className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-[#1a61b0] to-[#1e5a99] hover:from-[#2070c4] hover:to-[#2468ad] text-white font-bold text-base rounded-xl transition-all duration-200 hover:shadow-[0_0_30px_rgba(26,97,176,0.4)] mb-8"
           >
-            {preparing ? (
-              <>
-                <Loader2 className="w-5 h-5 animate-spin" />
-                <span>{t.preparingInstall}</span>
-              </>
-            ) : (
-              <>
-                <Download className="w-5 h-5" />
-                <span>{t.installBtn}</span>
-              </>
-            )}
+            <Download className="w-5 h-5" />
+            <span>{t.installBtn}</span>
           </button>
         )}
 
