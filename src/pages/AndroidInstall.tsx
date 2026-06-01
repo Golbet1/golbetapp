@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react';
-import { ArrowLeft, Download, MoreVertical, Plus } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { ArrowLeft, Download, MoreVertical, Plus, ChevronUp } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { usePWAInstall } from '../PWAInstallContext.tsx';
 
@@ -14,8 +14,10 @@ const TEXT = {
     installBtn: 'Add to Home Screen',
     installedTitle: 'Installation Complete!',
     installedDesc: 'Golbet has been added to your home screen. You can open the app from your home screen.',
-    stepsTitle: 'Manual Installation Steps',
-    stepsNote: 'Make sure you are using Chrome browser. Follow the steps below if the automatic installation does not start.',
+    chromeCue: 'Tap the Chrome menu in the top-right',
+    chromeCueDesc: 'Then select "Add to Home Screen" from the menu',
+    stepsTitle: 'Installation Steps',
+    stepsNote: 'Make sure you are using Chrome browser. Follow the steps below to add Golbet to your home screen.',
     step1Title: 'Open the Chrome menu',
     step1Desc: 'Tap the',
     step1Desc2: 'icon in the top-right corner',
@@ -31,8 +33,10 @@ const TEXT = {
     installBtn: 'Ana Ekrana Ekle',
     installedTitle: 'Kurulum Tamamlandı!',
     installedDesc: 'Golbet ana ekranınıza eklendi. Uygulamayı ana ekranınızdan açabilirsiniz.',
-    stepsTitle: 'Manuel Kurulum Adımları',
-    stepsNote: 'Chrome tarayıcısında açtığınızdan emin olun. Otomatik kurulum başlamazsa aşağıdaki adımları takip edin.',
+    chromeCue: 'Sağ üstteki Chrome menüsüne dokunun',
+    chromeCueDesc: 'Ardından menüden "Ana ekrana ekle" seçeneğini seçin',
+    stepsTitle: 'Kurulum Adımları',
+    stepsNote: 'Chrome tarayıcısında açtığınızdan emin olun. Golbet\'i ana ekranınıza eklemek için aşağıdaki adımları takip edin.',
     step1Title: 'Chrome menüsünü açın',
     step1Desc: 'Sağ üstteki',
     step1Desc2: 'ikonuna dokunun',
@@ -52,7 +56,15 @@ export default function AndroidInstall() {
 
   const { deferredPrompt, clearPrompt } = usePWAInstall();
   const [installed, setInstalled] = useState(false);
+  const [showCue, setShowCue] = useState(false);
   const stepsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!deferredPrompt) {
+      const timer = setTimeout(() => setShowCue(true), 800);
+      return () => clearTimeout(timer);
+    }
+  }, [deferredPrompt]);
 
   const handleInstall = async () => {
     if (deferredPrompt) {
@@ -65,22 +77,11 @@ export default function AndroidInstall() {
       return;
     }
 
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: 'Golbet',
-          text: 'Golbet Mobil Uygulama',
-          url: window.location.origin,
-        });
-        return;
-      } catch (_) {}
-    }
-
     stepsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   return (
-    <div className="min-h-screen bg-[#071d2a] flex flex-col items-center px-4 py-6">
+    <div className="min-h-screen bg-[#071d2a] flex flex-col items-center px-4 py-6 pt-16">
       <div className="w-full max-w-md">
         <Link
           to="/"
@@ -109,7 +110,7 @@ export default function AndroidInstall() {
             <h2 className="text-white font-bold text-lg mb-1">{t.installedTitle}</h2>
             <p className="text-[#8b9bb0] text-sm">{t.installedDesc}</p>
           </div>
-        ) : (
+        ) : deferredPrompt ? (
           <button
             onClick={handleInstall}
             className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-[#1a61b0] to-[#1e5a99] hover:from-[#2070c4] hover:to-[#2468ad] text-white font-bold text-base rounded-xl transition-all duration-200 hover:shadow-[0_0_30px_rgba(26,97,176,0.4)] mb-8"
@@ -117,7 +118,7 @@ export default function AndroidInstall() {
             <Download className="w-5 h-5" />
             <span>{t.installBtn}</span>
           </button>
-        )}
+        ) : null}
 
         <div ref={stepsRef} className="bg-[#0d2035] border border-[#1a4a6b]/60 rounded-xl p-5">
           <h2 className="text-white font-bold text-base mb-2 text-center">
@@ -167,6 +168,19 @@ export default function AndroidInstall() {
           </div>
         </div>
       </div>
+
+      {showCue && !installed && !deferredPrompt && (
+        <div className="fixed top-0 left-0 right-0 flex flex-col items-end pr-4 pt-3 pointer-events-none z-50">
+          <ChevronUp className="w-6 h-6 text-[#5ba3e6] animate-bounce mr-2" />
+          <div className="bg-[#0d2035]/95 backdrop-blur-sm border border-[#5ba3e6]/50 rounded-xl px-5 py-3 mt-1 shadow-[0_0_30px_rgba(91,163,230,0.2)] animate-fade-in max-w-[280px]">
+            <div className="flex items-center gap-2 mb-1">
+              <MoreVertical className="w-4 h-4 text-[#5ba3e6]" />
+              <span className="text-white text-sm font-semibold">{t.chromeCue}</span>
+            </div>
+            <p className="text-[#8b9bb0] text-xs">{t.chromeCueDesc}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
