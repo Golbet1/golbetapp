@@ -7,7 +7,6 @@ const LINKS = {
   telegram: 'https://t.ly/goltelegram',
   whatsapp: 'https://t.ly/golwhatsapp',
   twitter: 'https://t.ly/goltwitter',
-  instagram: 'https://t.ly/golinstagram',
   android: '/android',
   ios: '/ios',
   androidTr: '/android?lang=tr',
@@ -18,7 +17,6 @@ const LINKS = {
 const ASSETS = {
   logo: 'https://d3rklxwrkddo3q.cloudfront.net/2026/03/19/golbet-rb-beyaz-_3_.png',
   phoneMockup: 'https://d3rklxwrkddo3q.cloudfront.net/2026/05/22/golbetappphone.png',
-  iconInstagram: 'https://d3rklxwrkddo3q.cloudfront.net/2026/03/16/INSTA.png',
   iconTwitter: 'https://d3rklxwrkddo3q.cloudfront.net/2026/03/16/X.png',
   iconWhatsapp: 'https://d3rklxwrkddo3q.cloudfront.net/2026/03/16/WHATSAPP.png',
   iconTelegram: 'https://d3rklxwrkddo3q.cloudfront.net/2026/03/16/TELEGRAM.png',
@@ -174,7 +172,7 @@ function SocialLinks({ lang }: { lang: Lang }) {
     <section className="w-full max-w-[660px] mx-auto px-4 pb-10">
       <SectionTitle>{t.followUs}</SectionTitle>
 
-      <div className="grid grid-cols-4 gap-2">
+      <div className="grid grid-cols-3 gap-2">
         <a
           href={LINKS.telegram}
           target="_blank"
@@ -202,15 +200,7 @@ function SocialLinks({ lang }: { lang: Lang }) {
           <img src={ASSETS.iconTwitter} alt="X / Twitter" className="w-7 h-7" />
           <span className="text-white text-[10px] font-medium">X / Twitter</span>
         </a>
-        <a
-          href={LINKS.instagram}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex flex-col items-center gap-1.5 p-3 bg-[#0d2035] rounded-xl border border-[#1a4a6b]/60 hover:border-[#5ba3e6]/60 transition-all duration-200"
-        >
-          <img src={ASSETS.iconInstagram} alt="Instagram" className="w-7 h-7" />
-          <span className="text-white text-[10px] font-medium">Instagram</span>
-        </a>
+
       </div>
     </section>
   );
