@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Download, UserPlus, ArrowRight, Smartphone } from 'lucide-react';
 
 const LINKS = {
-  giris: 'https://t.ly/golgiris',
+  giris: 'https://t.ly/golguncel',
   telegram: 'https://t.ly/goltelegram',
   whatsapp: 'https://t.ly/golwhatsapp',
   twitter: 'https://t.ly/goltwitter',

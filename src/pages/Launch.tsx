@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { ExternalLink, Gift, Star, Trophy, Users } from 'lucide-react';
 import { supabase } from '../supabase';
 
-const REDIRECT_URL = 'https://t.ly/golgiris';
+const REDIRECT_URL = 'https://t.ly/golguncel';
 const PROMO_URL = 'https://t.ly/golpromosyon';
 const LOGO = 'https://d3rklxwrkddo3q.cloudfront.net/2026/03/19/golbet-rb-beyaz-_3_.png';
 
