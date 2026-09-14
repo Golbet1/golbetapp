@@ -25,6 +25,18 @@ const FALLBACK_PROMOTIONS: Promotion[] = [
 const PROMO_ICONS = [Trophy, Gift, Star, Users];
 const COUNTDOWN_SECONDS = 10;
 
+function safeLinkUrl(url: string): string {
+  try {
+    const parsed = new URL(url, window.location.origin);
+    if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+      return parsed.href;
+    }
+  } catch {
+    return PROMO_URL;
+  }
+  return PROMO_URL;
+}
+
 export default function Launch() {
   const [showContent, setShowContent] = useState(false);
   const [countdown, setCountdown] = useState(COUNTDOWN_SECONDS);
@@ -118,7 +130,7 @@ export default function Launch() {
               return (
                 <a
                   key={promo.id}
-                  href={promo.link_url}
+                  href={safeLinkUrl(promo.link_url)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-4 p-4 bg-[#0d2035] rounded-xl border border-[#1a4a6b]/60 hover:border-[#5ba3e6]/60 transition-all duration-200 group"
